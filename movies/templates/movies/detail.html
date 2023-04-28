@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+<h3><b>Detail</b> - {{ movie.id }} 번째 영화</h3>
+<hr>
+<img src="{{movie.poster_path}}" alt="영화 포스터">
+<br><br>
+<p>영화 제목 : {{ movie.title }}</p>
+{% if movie.overview %}
+<p>줄거리 : {{ movie.overview }}</p>
+{% endif %}
+<p>개봉일 : {{ movie.release_date }}</p>
+<p>평점 : {{ movie.vote_average }}</p>
+<span>장르 : </span>
+    {% for genre in movie.genres %}
+      <span>{{genre.name}}</span>
+    {% endfor %}
+<br><br>
+<a href="{% url 'movies:index' %}">[back]</a>
+{% endblock %}

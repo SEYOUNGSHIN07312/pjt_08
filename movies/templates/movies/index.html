@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1><b>Movies</b></h1>
+  <hr>
+  {% for movie in movies %}
+    <h5>{{movie.id}}번째 영화</h5>
+    <br>
+    <p>제목 : <a href="{% url 'movies:detail' movie.id %}">{{movie.title}}</a></p>
+    <span>장르 : </span>
+    {% for genre in movie.genres %}
+      <span>{{genre.name}}</span>
+    {% endfor %}
+    <br><br>
+    <p>평점 : {{movie.vote_average}}</p>
+    <hr>
+  {% endfor %}
+{% endblock %}

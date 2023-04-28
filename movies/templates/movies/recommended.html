@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1><b>Recommendation</b></h1>
+    <hr>
+    <h4>[장르 선택하기]</h4>
+    {% for genre in genres %}
+    <form action="{% url 'movies:recommendation' genre.name %}" method='POST'>
+        {% csrf_token %}
+        <button class='btn btn-light' type="submit"># {{genre.name}}</button>
+    </form>
+    {% endfor %}
+    <br>
+    <a href="{% url 'movies:index' %}">[back]</a>
+{% endblock %}

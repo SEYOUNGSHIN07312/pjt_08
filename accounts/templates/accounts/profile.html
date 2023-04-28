@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1><b>{{ person.username }}'s' Profile</b></h1>
+  {% with followings=person.followings.all followers=person.followers.all %}
+    <div>
+      <div>
+        팔로잉 : <span id="followings_count">{{ followings | length }}</span><br>
+        팔로워 : <span id="followers_count">{{ followers | length }}</span><br>
+      </div>
+      {% if user != person %}
+        <div>
+          <form id="follow-form" data-user-id="{{ person.pk }}">
+            {% csrf_token %}
+            {% if user in followers %}
+              <button type="submit" id="followBtn" class='btn btn-secondary'>Unfollow</button>
+            {% else %}
+              <button type="submit" id="followBtn" class='btn btn-primary'>Follow</button>
+            {% endif %}
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  {% endwith %}
+  <br>
+  <a href="{% url 'movies:index' %}">[back]</a>
+{% endblock content %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  const form = document.querySelector('#follow-form')
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault()
+
+    const userId = event.target.dataset.userId
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+    axios({
+      method:'post',
+      url:`/accounts/${userId}/follow/`,
+      headers: {'X-CSRFToken':csrftoken},
+    })
+    .then((response) => {
+      // 응답 성공
+      const isFollowed = response.data.is_followed
+      const followBtn = document.querySelector('#followBtn')
+      const followingsCountTag = document.querySelector('#followings_count')
+      const followersCountTag = document.querySelector('#followers_count')
+      const followingsCount = response.data.followings_count
+      const followersCount = response.data.followers_count
+
+      followBtn.classList.toggle('btn-secondary')
+      followBtn.classList.toggle('btn-primary')
+
+      followingsCountTag.innerText = followingsCount
+      followersCountTag.innerText = followersCount
+
+      if (isFollowed === true) {
+        followBtn.innerText = 'Unfollow'
+      } else {
+        followBtn.innerText = 'Follow'
+      }
+    })
+    .catch()
+  })
+
+</script>
+{% endblock script %}
